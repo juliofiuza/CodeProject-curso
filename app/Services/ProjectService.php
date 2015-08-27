@@ -54,8 +54,11 @@ class ProjectService
 	}
 
 	public function createFile(array $data)
-	{
-		$arquivo = $data['name'] . "." . $data['extension'];
+	{		
+		$project = $this->repository->skipPresenter()->find($data['project_id']);
+		$projectFile = $project->files()->create($data);
+
+		$arquivo = $projectFile->id . "." . $data['extension'];
 
         \Storage::put($arquivo, \File::get($data['file']));
 	}
