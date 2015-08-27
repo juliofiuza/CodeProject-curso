@@ -52,4 +52,11 @@ class ProjectService
 		}
 
 	}
+
+	public function createFile(array $data)
+	{
+		$arquivo = $data['name'] . "." . $data['extension'];
+
+        \Storage::put($arquivo, \File::get($data['file']));
+	}
 }
