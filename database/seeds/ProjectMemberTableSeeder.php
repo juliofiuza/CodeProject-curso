@@ -11,24 +11,13 @@ class ProjectMemberTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\CodeProject\Entities\User::class)->create([
-	        'project_id' => '10',
-	        'member_id' => '1',
-        ]);
+        DB::table('project_members')->delete();
 
-        factory(\CodeProject\Entities\User::class)->create([
-	        'project_id' => '9',
-	        'member_id' => '1',
-        ]);
-
-        factory(\CodeProject\Entities\User::class)->create([
-	        'project_id' => '9',
-	        'member_id' => '2',
-        ]);
-
-        factory(\CodeProject\Entities\User::class)->create([
-	        'project_id' => '8',
-	        'member_id' => '2',
-        ]);
+		DB::table('project_members')->insert([
+		    ['project_id' => 10, 'member_id' => 1],
+		    ['project_id' => 9, 'member_id' => 1],
+		    ['project_id' => 9, 'member_id' => 2],
+		    ['project_id' => 8, 'member_id' => 2]
+		]);
     }
 }
