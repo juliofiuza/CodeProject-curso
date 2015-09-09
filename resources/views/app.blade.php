@@ -41,8 +41,8 @@
 				<ul class="nav navbar-nav">
 					<li><a href="./#/home">Home</a></li>
 					<li><a href="./#/clients">Clients</a></li>
-					<li><a href="./#/project">Projects</a></li>
-					<li><a href="./#/project/1/notes">Notas de projeto</a></li>
+					<li><a href="./#/projects">Projects</a></li>
+					<li><a href="./#/project/1/notes">Project Notes</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
@@ -89,15 +89,24 @@
 	<script src="{{ asset('build/js/controllers/client/clientNew.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/client/clientEdit.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/client/clientRemove.js') }}"></script>
+	<script src="{{ asset('build/js/controllers/project/projectList.js') }}"></script>
+	<script src="{{ asset('build/js/controllers/project/projectShow.js') }}"></script>
+	<script src="{{ asset('build/js/controllers/project/projectNew.js') }}"></script>
+	<script src="{{ asset('build/js/controllers/project/projectEdit.js') }}"></script>
+	<script src="{{ asset('build/js/controllers/project/projectRemove.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/project-note/projectNoteList.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/project-note/projectNoteShow.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/project-note/projectNoteNew.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/project-note/projectNoteEdit.js') }}"></script>
 	<script src="{{ asset('build/js/controllers/project-note/projectNoteRemove.js') }}"></script>
 	
+	<!-- Filters -->
+	<script src="{{ asset('build/js/filters/date-br.js') }}"></script>
+	
 	<!-- Services -->
 	<script src="{{ asset('build/js/services/user.js') }}"></script>
 	<script src="{{ asset('build/js/services/client.js') }}"></script>
+	<script src="{{ asset('build/js/services/project.js') }}"></script>
 	<script src="{{ asset('build/js/services/projectNote.js') }}"></script>
 	@else
 	<script src=".{{ elixir('js/all.js') }}"></script>	
