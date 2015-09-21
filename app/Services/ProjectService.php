@@ -53,13 +53,26 @@ class ProjectService
 
 	}
 
-	public function createFile(array $data)
-	{		
-		$project = $this->repository->skipPresenter()->find($data['project_id']);
-		$projectFile = $project->files()->create($data);
+    public function checkProjectOwner($projectId)
+    {
+        $userId = \Authorizer::getResourceOwnerId();
 
-		$arquivo = $projectFile->id . "." . $data['extension'];
+        return $this->repository->isOwner($projectId, $userId);
+    }
 
-        \Storage::put($arquivo, \File::get($data['file']));
-	}
+    public function checkProjectMember($projectId)
+    {
+        $userId = \Authorizer::getResourceOwnerId();
+
+        return $this->repository->hasMember($projectId, $userId);
+    }
+
+    public function checkProjectPermissions($projectId)
+    {
+        if ($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)) {
+            return true;
+        }
+
+        return false;
+    }
 }

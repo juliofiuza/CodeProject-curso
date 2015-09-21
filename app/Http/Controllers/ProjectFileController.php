@@ -2,24 +2,24 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ProjectRepository;
-use CodeProject\Services\ProjectService;
+use CodeProject\Repositories\ProjectFileRepository;
+use CodeProject\Services\ProjectFileService;
 use Illuminate\Http\Request;
 
 class ProjectFileController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectFileRepository
      */
     private $repository;
 
     /**
-     * @var ProjectService
+     * @var ProjectFileService
      */
     private $service;
 
-    public function __construct(ProjectRepository $repository, ProjectService $service)
+    public function __construct(ProjectFileRepository $repository, ProjectFileService $service)
     {
         $this->repository = $repository;
         $this->service = $service;
@@ -29,9 +29,9 @@ class ProjectFileController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index($id)
     {
-        return $this->repository->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        return $this->repository->findWhere(['project_id' => $id]);
     }
 
     /**
@@ -51,9 +51,22 @@ class ProjectFileController extends Controller
         $data['project_id'] = $request->project_id;
         $data['description'] = $request->description;
 
-        $this->service->createFile($data);
+        return $this->service->create($data);
+    }
 
-        //return $this->service->create($request->all());
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function showFile($id)
+    {
+        if ($this->service->checkProjectPermissions($id) == false) {
+            return ['error' => 'Acesso Negado'];
+        }
+
+        return response()->download($this->service->getFilePath($id));
     }
 
     /**
@@ -64,7 +77,7 @@ class ProjectFileController extends Controller
      */
     public function show($id)
     {
-        if ($this->checkProjectPermissions($id) == false) {
+        if ($this->service->checkProjectPermissions($id) == false) {
             return ['error' => 'Acesso Negado'];
         }
 
@@ -80,7 +93,7 @@ class ProjectFileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($this->checkProjectPermissions($id) == false) {
+        if ($this->service->checkProjectPermissions($id) == false) {
             return ['error' => 'Acesso Negado'];
         }
         return $this->service->update($request->all(), $id);
@@ -94,32 +107,9 @@ class ProjectFileController extends Controller
      */
     public function destroy($id)
     {
-        if ($this->checkProjectPermissions($id) == false) {
+        if ($this->service->checkProjectPermissions($id) == false) {
             return ['error' => 'Acesso Negado'];
         }
         $this->repository->delete($id);
-    }
-
-    private function checkProjectOwner($projectId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-
-        return $this->repository->isOwner($projectId, $userId);
-    }
-
-    private function checkProjectMember($projectId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-
-        return $this->repository->hasMember($projectId, $userId);
-    }
-
-    private function checkProjectPermissions($projectId)
-    {
-        if ($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)) {
-            return true;
-        }
-
-        return false;
     }
 }
