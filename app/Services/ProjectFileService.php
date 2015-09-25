@@ -96,6 +96,11 @@ class ProjectFileService
 		return $this->getBaseURL($projectFile);
 	}
 
+	public function getFileName($id) {
+		$projectFile = $this->repository->skipPresenter()->find($id);
+		return $projectFile->getFileName();
+	}
+
 	public function getBaseURL($projectFile)
 	{
 		switch ($this->storage->getDefaultDriver()) {
@@ -104,30 +109,5 @@ class ProjectFileService
 		}
 
 	}
-
-    private function checkProjectOwner($projectFileId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-        $projectId = $this->repository->skipPresenter()->find($projectFileId)->project_id;
-
-        return $this->projectRepository->isOwner($projectId, $userId);
-    }
-
-    private function checkProjectMember($projectFileId)
-    {
-        $userId = \Authorizer::getResourceOwnerId();
-        $projectId = $this->repository->skipPresenter()->find($projectFileId)->project_id;
-
-        return $this->projectRepository->hasMember($projectId, $userId);
-    }
-
-    private function checkProjectPermissions($projectFileId)
-    {
-        if ($this->checkProjectOwner($projectFileId) or $this->checkProjectMember($projectFileId)) {
-            return true;
-        }
-
-        return false;
-    }
 
 }

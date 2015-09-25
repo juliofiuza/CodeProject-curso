@@ -23,14 +23,9 @@ Route::group(['middleware' => 'oauth'], function() {
 
 	Route::resource('client', 'ClientController', ['except' => ['create', 'edit']]);
 	
-	/*
-	Route::group(['middleware' => 'CheckProjectOwner'], function () {
-		Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
-	});
-	*/
 	Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
 
-	Route::group(['prefix' => 'project'], function() {
+	Route::group(['middleware' => 'CheckProjectPermission', 'prefix' => 'project'], function() {
 		// Project Notes
 		Route::get('{id}/note', 'ProjectNoteController@index');
 		Route::post('{id}/note', 'ProjectNoteController@store');
@@ -39,11 +34,17 @@ Route::group(['middleware' => 'oauth'], function() {
 		Route::put('{id}/note/{noteId}', 'ProjectNoteController@update');
 
 		Route::get('{id}/file', 'ProjectFileController@index');
-		Route::get('file/{fileId}', 'ProjectFileController@show');
-		Route::get('file/{fileId}/download', 'ProjectFileController@showFile');
+		Route::get('{id}/file/{fileId}', 'ProjectFileController@show');
+		Route::get('{id}/file/{fileId}/download', 'ProjectFileController@showFile');
 		Route::post('{id}/file', 'ProjectFileController@store');
-		Route::put('{id}/file', 'ProjectFileController@update');
-		Route::delete('{id}/file', 'ProjectFileController@destroy');
+		Route::put('{id}/file/{fileId}', 'ProjectFileController@update');
+		Route::delete('{id}/file/{fileId}', 'ProjectFileController@destroy');
+
+		Route::get('{id}/task', 'ProjectTaskController@index');
+		Route::get('{id}/task/{taskId}', 'ProjectTaskController@show');
+		Route::post('{id}/task', 'ProjectTaskController@store');
+		Route::put('{id}/task/{taskId}', 'ProjectTaskController@update');
+		Route::delete('{id}/task/{taskId}', 'ProjectTaskController@destroy');
 	});
 
 	Route::get('user/authenticated', 'UserController@authenticated');

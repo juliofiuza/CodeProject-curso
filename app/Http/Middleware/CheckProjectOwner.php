@@ -2,7 +2,7 @@
 
 namespace CodeProject\Http\Middleware;
 
-use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Services\ProjectService;
 
 use Closure;
 
@@ -10,13 +10,13 @@ class CheckProjectOwner
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectService
      */
-    private $repository;
+    private $service;
 
-    public function __construct(ProjectRepository $repository)
+    public function __construct(ProjectService $service)
     {
-        $this->repository = $repository;
+        $this->service = $service;
     }
 
     /**
@@ -28,11 +28,9 @@ class CheckProjectOwner
      */
     public function handle($request, Closure $next)
     {
-        
-        $userId = \Authorizer::getResourceOwnerId();
-        $projectId = $request->project;
+        $projectId = $request->route('id') ? $request->route('id') : $request->route('project');
 
-        if ($this->repository->isOwner($projectId, $userId) == false) {
+        if ($this->service->checkProjectOwner($projectId) == false) {
             return ['error' => 'Acesso Negado'];
         }
 
